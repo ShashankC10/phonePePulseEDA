@@ -8,7 +8,6 @@ This project analyzes the PhonePe Pulse dataset to understand:
 - how activity differs across states and districts after user normalization.
 
 Motivation:
-- build a rigorous, portfolio-ready data mining workflow,
 - ground later modeling decisions in evidence from exploratory analysis,
 - surface actionable hypotheses for anomaly detection and forecasting.
 
