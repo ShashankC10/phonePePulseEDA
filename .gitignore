@@ -13,6 +13,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.claude
 
 # Jupyter
 .ipynb_checkpoints/
@@ -25,3 +26,6 @@ dist/
 
 # Local dataset clone (separate repository)
 pulse/
+
+# Personal study notes
+notebook_guide.md
