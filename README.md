@@ -1,91 +1,95 @@
-# PhonePe Pulse EDA Project
+# PhonePe Pulse EDA
 
-## 1. Problem Statement and Motivation
-India's digital payments ecosystem has grown rapidly, but adoption and transaction intensity vary across regions and over time.  
-This project analyzes the PhonePe Pulse dataset to understand:
-- how transaction volume/value evolves quarter by quarter,
-- how payment category mix changes over time,
-- how activity differs across states and districts after user normalization.
+An exploratory data analysis of India's PhonePe Pulse open dataset — tracking how the country's digital payments behavior evolved quarter by quarter across states and districts from 2018 to 2024. The project turns seven years of aggregated transaction data into a clean narrative about where digital payments grew, how the category mix shifted toward merchant-first flows, and which district-quarters stand out as anomalies worth modeling next.
 
-Motivation:
-- ground later modeling decisions in evidence from exploratory analysis,
-- surface actionable hypotheses for anomaly detection and forecasting.
+👉 **Start here: [`main_notebook.ipynb`](./main_notebook.ipynb)**
 
-## 2. Dataset Choice Rationale (A/B/C Summary)
-Three candidates were considered:
-1. Instacart Online Grocery Shopping Dataset 2017
-2. PhonePe Pulse
-3. BTS (KDD 2025 tie-strength benchmark)
+🎥 **Project video:** https://www.youtube.com/watch?v=Z0OK7tT9yGA
 
-Final selected dataset in this repository: **PhonePe Pulse**.
+## Research questions
 
-Why PhonePe Pulse was selected:
-- aligns with course techniques: clustering-ready feature engineering, anomaly-oriented analysis, trend mining;
-- supports beyond-course methods: change-point detection and hierarchical/spatiotemporal forecasting;
-- matches implemented notebook sections A-F end-to-end (coherent submission narrative).
+1. How does transaction **volume and value** evolve quarter by quarter at the national, state, and district level?
+2. How does the **payment category mix** (P2P vs. merchant, recharge, financial services, etc.) change over time?
+3. Once we normalize by registered-user counts, how does **per-user payment intensity** differ across states and districts?
+4. Which district-quarters register as **anomalies** relative to their own history, and what do they suggest for downstream modeling?
 
-Trade-offs:
-- aggregated data (no user-level event sequence reconstruction),
-- no direct market-basket frequent itemset setting like Instacart.
+## Data
 
-## 3. Reproducibility Steps
-### Prerequisites
-- Python 3.10+ recommended
-- Git installed
+- **Source:** [PhonePe Pulse](https://github.com/PhonePe/pulse) — PhonePe's open aggregated transactions dataset (JSON files organized by `aggregated/`, `map/`, `top/` → `transaction/user/insurance`).
+- **Coverage analyzed:** 2018Q1 – 2024Q4.
+- **Access:** clone the upstream repo into `./pulse/` (see reproduction steps below). The dataset is **not committed** to this repo — it's a separate upstream repository and is gitignored.
+- **Preprocessing:** all JSON → tidy `pandas` DataFrame flattening happens inside `main_notebook.ipynb` (no separate ETL script needed). State-level and district-level tables are joined with registered-user counts for normalization; a robust-z-score baseline is computed per district time series.
 
-### Add dataset (required)
-From the project root (`/Users/shashank/Documents/phonePePulseEDA`), clone the PhonePe Pulse dataset into a folder named `pulse`:
+## How to reproduce
+
+This project runs both locally and on Google Colab. Notebooks should be executed top-to-bottom.
+
+**1. Get the code and dataset**
+
 ```bash
-# HTTPS
-git clone https://github.com/PhonePe/pulse.git pulse
-
-# or SSH
-git clone git@github.com:PhonePe/pulse.git pulse
-```
-
-Expected location after clone:
-- `/Users/shashank/Documents/phonePePulseEDA/pulse/data/`
-
-Quick check:
-```bash
+git clone https://github.com/ShashankC10/phonePePulseEDA.git
+cd phonePePulseEDA
+git clone https://github.com/PhonePe/pulse.git pulse     # dataset (separate repo)
 test -d pulse/data && echo "Dataset ready at pulse/data"
 ```
 
-### Setup environment
+**2. Set up the environment**
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Run notebook
+**3. Run the notebooks in this order**
+
+1. `main_notebook.ipynb` — the curated, graded deliverable (read this one first).
+2. `checkpoints/checkpoint_1.ipynb` — initial exploratory pass.
+3. `checkpoints/checkpoint_2.ipynb` — research-question-driven follow-up.
+
 ```bash
-jupyter notebook eda.ipynb
-```
-Then run all cells from top to bottom.
-
-Optional validation run:
-```bash
-jupyter nbconvert --to notebook --execute eda.ipynb --inplace
+jupyter notebook main_notebook.ipynb
+# or, for a non-interactive validation run:
+jupyter nbconvert --to notebook --execute main_notebook.ipynb --inplace
 ```
 
-## 4. Key EDA Findings and Next-Step Modeling Plan
-### Key findings
-- Time coverage analyzed: **2018Q1 to 2024Q4**.
-- Merchant payment share increased substantially over the period.
-- State-level concentration remains meaningful (top states account for a large share of total amount).
-- District-level amount-per-user distribution is highly skewed.
-- Robust z-score baseline identifies a non-trivial set of district-quarter anomalies.
+## Key dependencies
 
-### Next-step modeling plan
-1. anomaly detection on district-quarter normalized metrics,
-2. clustering of district/state behavioral profiles.
+Developed on **Python 3.13** locally and also compatible with Colab's default Python 3.11. The full list lives in [`requirements.txt`](./requirements.txt); the headline packages are:
 
-Beyond-course:
-1. change-point detection on state-level quarterly trajectories,
-2. hierarchical/spatiotemporal forecasting (state -> district).
+| Package | Version |
+|---|---|
+| pandas | 2.2.3 |
+| numpy | 2.1.3 |
+| matplotlib | 3.10.0 |
+| scikit-learn | 1.6.1 |
+| ruptures | 1.1.10 |
+| jupyter | 1.1.1 |
 
-Deliverables for next checkpoint:
-- modeling notebook with justification for each algorithmic choice,
-- evaluation tables and error analysis,
-- interpretation of regional heterogeneity and bias implications.
+## Repo structure
+
+```
+phonePePulseEDA/
+├── main_notebook.ipynb        👈 final curated deliverable (start here)
+├── checkpoints/
+│   ├── checkpoint_1.ipynb     initial EDA checkpoint
+│   └── checkpoint_2.ipynb     research-question checkpoint
+├── requirements.txt           pinned Python dependencies
+├── README.md                  this file
+├── .gitignore
+└── pulse/                     PhonePe Pulse dataset (cloned separately; gitignored)
+    └── data/
+        ├── aggregated/
+        ├── map/
+        └── top/
+```
+
+## Results summary
+
+- **Time coverage:** 2018Q1 → 2024Q4 analyzed end-to-end across seven years and four dataset hierarchies.
+- **Category mix:** merchant payments' share of total transactions rose materially over the window, reshaping the volume/value mix away from P2P-dominant behavior.
+- **Geographic concentration:** a small group of top states continues to account for a disproportionate share of total transaction value; national growth is not geographically uniform.
+- **Per-user intensity:** district-level amount-per-user distributions are highly right-skewed — the median district is very different from the heavyweights.
+- **Anomalies:** a robust-z-score baseline on district-quarter normalized metrics surfaces a non-trivial set of outlier district-quarters, which are the natural seed for anomaly-detection and change-point modeling in future work.
+
+Full analysis, figures, and interpretation live in [`main_notebook.ipynb`](./main_notebook.ipynb).
