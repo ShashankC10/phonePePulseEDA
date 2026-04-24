@@ -1,17 +1,11 @@
 # PhonePe Pulse EDA — pinned dependencies
-# Python 3.13 (local venv)
-# Install with: pip install -r requirements.txt
+# Python 3.13 local venv
 
-# Core data + plotting
 pandas==2.2.3
 numpy==2.1.3
 matplotlib==3.10.0
-
-# ML / analysis
 scikit-learn==1.6.1
 ruptures==1.1.10
-
-# Notebook runtime
 jupyter==1.1.1
 notebook==7.3.2
 ipython==8.30.0
