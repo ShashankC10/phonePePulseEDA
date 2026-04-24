@@ -25,8 +25,8 @@ build/
 dist/
 *.egg-info/
 
-# Local dataset clone (separate repository)
+# Local dataset clone
 pulse/
 
-# Personal study notes
+# Assignment / personal files
 final_deliverable-1.pdf
