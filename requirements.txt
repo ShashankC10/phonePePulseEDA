@@ -1,5 +1,5 @@
 # PhonePe Pulse EDA — pinned dependencies
-# Python 3.13 (local venv); also tested on Colab's default Python 3.11.
+# Python 3.13 (local venv)
 # Install with: pip install -r requirements.txt
 
 # Core data + plotting
